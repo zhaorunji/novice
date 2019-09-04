@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"db"
+)
 
 func main() {
-	fmt.Println("222")
+	db.OrderDb()
 }
