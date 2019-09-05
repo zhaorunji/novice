@@ -2,8 +2,10 @@ package main
 
 import (
 	"db"
+	"router"
 )
 
 func main() {
-	db.OrderDb()
+	db.GetDb()
+	router.OrderRouter()
 }

@@ -1,6 +1,6 @@
 package model
 
-type Order struct {
+type DemoOrder struct {
 	OrderId  string
 	UserName string
 	Amount   float64
