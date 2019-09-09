@@ -3,6 +3,7 @@ package service
 import (
 	"db"
 	"fmt"
+	"github.com/tealeg/xlsx"
 	"model"
 )
 
@@ -45,6 +46,53 @@ func LikeQueryService(demoOrder *[]model.DemoOrder) bool {
 	err := db.Where("user_name like ?", "%2%").Order("amount").Find(&demoOrder).Error
 	defer db.Close()
 	return isSuccess(err)
+}
+
+//将demo_order 所有数据以excel形式导出来(可以下载)
+func ExcelExportService() bool {
+	file := xlsx.NewFile()
+	sheet, err := file.AddSheet("demo_order_list")
+	var demoOrders []model.DemoOrder
+	//获取demo_order数据
+	LikeQueryService(&demoOrders)
+	if err != nil {
+		fmt.Println(err)
+		return false
+	} else {
+		//创建列名
+		row := sheet.AddRow()
+		orderId := row.AddCell()
+		orderId.SetValue("order_id")
+		userName := row.AddCell()
+		userName.SetValue("user_name")
+		amount := row.AddCell()
+		amount.SetValue("amount")
+		status := row.AddCell()
+		status.SetValue("status")
+		fileUrl := row.AddCell()
+		fileUrl.SetValue("file_url")
+		//添加行内容
+		for _, demoOrder := range demoOrders {
+			row := sheet.AddRow()
+			orderId := row.AddCell()
+			orderId.SetValue(demoOrder.OrderId)
+			userName := row.AddCell()
+			userName.SetValue(demoOrder.UserName)
+			amount := row.AddCell()
+			amount.SetValue(demoOrder.Amount)
+			status := row.AddCell()
+			status.SetValue(demoOrder.Status)
+			fileUrl := row.AddCell()
+			fileUrl.SetValue(demoOrder.FileURL)
+		}
+	}
+	//写入的文件
+	err = file.Save("./file/excelDemo.xlsx")
+	if err != nil {
+		fmt.Println(err)
+		return false
+	}
+	return true
 }
 
 //成功执行则返回true
