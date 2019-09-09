@@ -1,8 +1,8 @@
 package main
 
 import (
-	"db"
-	"router"
+	"novice/db"
+	"novice/router"
 )
 
 func main() {
